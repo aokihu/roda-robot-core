@@ -16,67 +16,73 @@ export type LogFormatTimestamp = 'short' | 'full';
  * @class Log
  */
 class Log {
-  /* Private properties */
+  /* ---------------------------------- */
+  /*         Private properties         */
+  /* ---------------------------------- */
   private enable: boolean = process.env.RODA_LOG != null ?? false;
   private formatTimestamp: LogFormatTimestamp = 'full';
   private cache: Set<string> = new Set();
 
-  /* Private functions */
+  /* ---------------------------------- */
+  /*          Private functions         */
+  /* ---------------------------------- */
 
+  /**
+   * Formated timestamp string
+   * @returns timstamp string
+   */
   private timestamp() {
     const now = new Date();
+    const Y = now.getFullYear();
+    const M = now.getMonth();
+    const D = now.getDate();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+    const ms = now.getMilliseconds().toString().padStart(3, '0');
 
-    if (this.formatTimestamp === 'full') {
-      return (
-        `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ` +
-        `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`
-      );
-    } else if (this.formatTimestamp === 'short') {
-      return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
+    switch (this.formatTimestamp) {
+      case 'full':
+        return `${Y}-${M}-${D} ` + `${h}:${m}:${s}.${ms}`;
+      case 'short':
+        return `${h}:${m}:${s}.${ms}`;
     }
   }
 
-  /* Public functions */
+  /* ---------------------------------- */
+  /*          Public functions          */
+  /* ---------------------------------- */
 
   /**
    * Log enable
    */
-  on(): void {
-    this.enable = true;
-  }
+  on = () => (this.enable = true);
 
   /**
    * Log disable
    */
-  off(): void {
-    this.enable = false;
-  }
+  off = () => (this.enable = false);
 
   /**
    * Set the format of timestamp
    * @param format 'full' or 'short'
    */
-  setFormatTimestamp(format: LogFormatTimestamp) {
-    this.formatTimestamp = format;
-  }
+  setFormatTimestamp = (format: LogFormatTimestamp) =>
+    (this.formatTimestamp = format);
 
   /**
    * return error format string
    * @param msg Message string
    * @returns error format string
    */
-  errorMessage(msg: string) {
-    return Colors.red(`[${msg}]`);
-  }
+  errorMessage = (msg: string) => Colors.red(`[${msg}]`);
 
   /**
    * return success fromat string
    * @param msg success format string
    * @returns success format string
    */
-  successMessage(msg: string) {
-    return Colors.green(`[${msg}]`);
-  }
+  successMessage = (msg: string) => Colors.green(`[${msg}]`);
 
   /**
    * Put message
@@ -93,9 +99,7 @@ class Log {
   /**
    * Clear cache
    */
-  flush(): void {
-    this.cache.clear();
-  }
+  flush = () => this.cache.clear();
 
   /**
    * print message to std
@@ -107,17 +111,16 @@ class Log {
         [...this.cache.values()].join('')
       );
     }
-
     return this;
   }
 
   /**
    * Print and flush cache
    */
-  print_f(): void {
+  print_f = () => {
     this.print();
     this.flush();
-  }
+  };
 }
 
 /* Exports*/
