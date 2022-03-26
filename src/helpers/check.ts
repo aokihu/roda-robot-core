@@ -10,6 +10,8 @@
  */
 
 import {version} from 'process'
+import * as Colors from './colors'
+import Log from './log'
 
 /**
  * @type IRoadCheckResult
@@ -22,26 +24,35 @@ export interface IRodaCheckResult {
 }
 
 /**
+ * Before check
+ */
+function precheck() {
+  Log?.record("Check envrioment...").print_f()
+}
+
+/**
  * Check runtime envrioment
  * - Node.json version must > 16
  */
-async function check (param: {
-  nodeVersion: string
+async function check (param?: {
+  nodeVersion?: string
 }): Promise<IRodaCheckResult> {
+  precheck();
   const result: IRodaCheckResult = { passed: true }
 
   // - Check node.js version
   const versionPartten = /v(\d+)\.(\d+)\.(\d+)/
-  const versionMatchs = versionPartten.exec(param?.nodeVersion ?? version)
+  const nodeVersion = param?.nodeVersion ?? version
+  const versionMatchs = versionPartten.exec(nodeVersion)
   
   if(Number(versionMatchs![1]) < 16) {
     result.passed = false;
     result.reason = "Node.js version must > v16"
-
+    Log?.record(Log.errorMessage("failed")," Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
     return result
   }
+  Log?.record( Log.successMessage("pass"), " Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
   
-
   return result;
 }
 

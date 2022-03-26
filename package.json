@@ -7,7 +7,9 @@
   "license": "MIT",
   "scripts": {
     "pretest": "tsc",
-    "test": "mocha"
+    "test": "mocha",
+    "prestart": "tsc",
+    "start": "node build/index.js"
   },
   "dependencies": {
     "mqtt": "^4.3.7",
