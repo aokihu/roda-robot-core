@@ -31,6 +31,25 @@ function precheck() {
 }
 
 /**
+ * check node runtime version
+ * @param ver version string
+ * @returns passed return null, or failed return reason
+ */
+function checkNodeVersion(ver?: string): null | string {
+    const versionPartten = /v(\d+)\.(\d+)\.(\d+)/
+    const nodeVersion = ver ?? version
+    const versionMatchs = versionPartten.exec(nodeVersion)
+  
+    if(Number(versionMatchs![1]) < 16) {
+      Log?.record(Log.errorMessage("failed")," Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
+      return "Node.js version must > v16";
+    }
+  
+    Log?.record( Log.successMessage("pass"), " Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
+    return null;
+}
+
+/**
  * Check runtime envrioment
  * - Node.json version must > 16
  */
@@ -41,18 +60,13 @@ async function check (param?: {
   const result: IRodaCheckResult = { passed: true }
 
   // - Check node.js version
-  const versionPartten = /v(\d+)\.(\d+)\.(\d+)/
-  const nodeVersion = param?.nodeVersion ?? version
-  const versionMatchs = versionPartten.exec(nodeVersion)
-  
-  if(Number(versionMatchs![1]) < 16) {
+  let reason = checkNodeVersion(param?.nodeVersion)
+  if(reason) {
     result.passed = false;
-    result.reason = "Node.js version must > v16"
-    Log?.record(Log.errorMessage("failed")," Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
-    return result
+    result.reason = reason;
   }
-  Log?.record( Log.successMessage("pass"), " Node.js version is ", Colors.brightBlue(nodeVersion)).print_f()
   
+  // - return check result
   return result;
 }
 
