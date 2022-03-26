@@ -10,31 +10,29 @@
  */
 
 import * as Colors from './colors';
-
-export type LogFormatTimestamp = 'short' | 'full'
+export type LogFormatTimestamp = 'short' | 'full';
 
 /**
  * @class Log
  */
 class Log {
-
   /* Private properties */
-  private enable: boolean = true
-  private formatTimestamp: LogFormatTimestamp = 'full'
-  private cache: Set<string> = new Set()
+  private enable: boolean = process.env.RODA_LOG != null ?? false;
+  private formatTimestamp: LogFormatTimestamp = 'full';
+  private cache: Set<string> = new Set();
 
   /* Private functions */
 
   private timestamp() {
     const now = new Date();
 
-    if(this.formatTimestamp === 'full') {
-      return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`
-    } else if(this.formatTimestamp === 'short') {
-      return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`
+    if (this.formatTimestamp === 'full') {
+      return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
+    } else if (this.formatTimestamp === 'short') {
+      return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
     }
   }
-  
+
   /* Public functions */
 
   /**
@@ -48,7 +46,7 @@ class Log {
    * Log disable
    */
   off(): void {
-    this.enable = false
+    this.enable = false;
   }
 
   /**
@@ -56,9 +54,9 @@ class Log {
    * @param format 'full' or 'short'
    */
   setFormatTimestamp(format: LogFormatTimestamp) {
-    this.formatTimestamp = format
+    this.formatTimestamp = format;
   }
-  
+
   /**
    * return error format string
    * @param msg Message string
@@ -74,7 +72,7 @@ class Log {
    * @returns success format string
    */
   successMessage(msg: string) {
-    return Colors.green(`[${msg}]`)
+    return Colors.green(`[${msg}]`);
   }
 
   /**
@@ -82,9 +80,9 @@ class Log {
    * @param msg message string array
    * @returns this
    */
-  record(...msg: string[]): Log{
-    for(const m of msg) {
-      this.cache.add(m)
+  record(...msg: string[]): Log {
+    for (const m of msg) {
+      this.cache.add(m);
     }
     return this;
   }
@@ -100,10 +98,13 @@ class Log {
    * print message to std
    */
   print(): Log {
-    if(this.enable) {
-      console.log(Colors.gray(this.timestamp()!), [...this.cache.values()].join(""));
+    if (this.enable) {
+      console.log(
+        Colors.gray(this.timestamp()!),
+        [...this.cache.values()].join('')
+      );
     }
-    
+
     return this;
   }
 
@@ -114,11 +115,10 @@ class Log {
     this.print();
     this.flush();
   }
-
 }
 
 /* Exports*/
 let _singleInstance: Log | null = null;
-_singleInstance = _singleInstance ?? new Log()
+_singleInstance = _singleInstance ?? new Log();
 
-export default _singleInstance
+export default _singleInstance;

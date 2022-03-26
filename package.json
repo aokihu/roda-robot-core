@@ -9,7 +9,7 @@
     "pretest": "tsc",
     "test": "mocha",
     "prestart": "tsc",
-    "start": "node build/index.js"
+    "start": "export RODA_LOG=1 && node build/index.js"
   },
   "dependencies": {
     "mqtt": "^4.3.7",
