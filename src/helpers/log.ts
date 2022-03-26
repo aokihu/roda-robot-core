@@ -27,7 +27,10 @@ class Log {
     const now = new Date();
 
     if (this.formatTimestamp === 'full') {
-      return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
+      return (
+        `${now.getFullYear()}-${now.getMonth()}-${now.getDate()} ` +
+        `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`
+      );
     } else if (this.formatTimestamp === 'short') {
       return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}`;
     }
